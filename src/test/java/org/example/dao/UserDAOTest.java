@@ -7,18 +7,20 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class UserDAOTest {
 
+    private UserDAO userDAO = new UserDAO();
+
     @Test
     void saveAndGetAndDelete(){
         User user = new User("test_login", "test_pass", "test_fn", "test_ln");
-        UserDAO.save(user);
+        userDAO.save(user);
         user.setLogin("t_login");
-        UserDAO.update(user);
-        User userFromDB = UserDAO.findById(user.getId());
+        userDAO.update(user);
+        User userFromDB = userDAO.findById(user.getId());
         assertNotNull(userFromDB);
         assertEquals(user.getLogin(), userFromDB.getLogin());
 
-        UserDAO.delete(user);
-        User userDeletedFromDB = UserDAO.findById(user.getId());
+        userDAO.delete(user);
+        User userDeletedFromDB = userDAO.findById(user.getId());
         assertNull(userDeletedFromDB);
     }
 }

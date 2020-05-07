@@ -12,31 +12,36 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class OrderDAOTest {
 
+    private OrderDAO orderDAO = new OrderDAO();
+    private UserDAO userDAO = new UserDAO();
+    private CartDAO cartDAO = new CartDAO();
+    private ItemDAO itemDAO = new ItemDAO();
+
     @Test
     void saveAndGetAndDelete() {
         long currentTime = new Date().getTime();
 
         User user = new User("test_login", "test_pass", "test_fn", "test_ln");
-        UserDAO.save(user);
-        User userFromDB = UserDAO.findById(user.getId());
+        userDAO.save(user);
+        User userFromDB = userDAO.findById(user.getId());
 
         Cart cart = new Cart(0, userFromDB.getId(), currentTime);
-        CartDAO.save(cart);
+        cartDAO.save(cart);
 
         Item item = new Item("test_name", "t_code", 123, 1);
-        ItemDAO.save(item);
+        itemDAO.save(item);
 
         Order order = new Order(item.getId(), cart.getId(), 10);
-        OrderDAO.save(order);
+        orderDAO.save(order);
         order.setAmount(15);
-        OrderDAO.update(order);
-        Order orderFromDB = OrderDAO.findById(order.getId());
+        orderDAO.update(order);
+        Order orderFromDB = orderDAO.findById(order.getId());
         assertNotNull(orderFromDB);
         assertEquals(order.getAmount(), orderFromDB.getAmount());
 
-        OrderDAO.delete(order);
-        assertNull(OrderDAO.findById(order.getId()));
-        CartDAO.delete(cart);
-        UserDAO.delete(user);
+        orderDAO.delete(order);
+        assertNull(orderDAO.findById(order.getId()));
+        cartDAO.delete(cart);
+        userDAO.delete(user);
     }
 }

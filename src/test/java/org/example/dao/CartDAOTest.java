@@ -10,23 +10,25 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class CartDAOTest {
 
+    private CartDAO cartDAO = new CartDAO();
+    private UserDAO userDAO = new UserDAO();
     @Test
     void saveAndGetAndDelete() {
         long currentTime = new Date().getTime();
         User user = new User("test_login", "test_pass", "test_fn", "test_ln");
-        UserDAO.save(user);
-        User userFromDB = UserDAO.findById(user.getId());
+        userDAO.save(user);
+        User userFromDB = userDAO.findById(user.getId());
 
         Cart cart = new Cart(0, userFromDB.getId(), currentTime);
-        CartDAO.save(cart);
+        cartDAO.save(cart);
         cart.setClosed(1);
-        CartDAO.update(cart);
-        Cart cartFromDB = CartDAO.findById(cart.getId());
+        cartDAO.update(cart);
+        Cart cartFromDB = cartDAO.findById(cart.getId());
         assertNotNull(cartFromDB);
         assertEquals(cart.getClosed(), cartFromDB.getClosed());
 
-        CartDAO.delete(cart);
-        assertNull(CartDAO.findById(cart.getId()));
-        UserDAO.delete(user);
+        cartDAO.delete(cart);
+        assertNull(cartDAO.findById(cart.getId()));
+        userDAO.delete(user);
     }
 }
