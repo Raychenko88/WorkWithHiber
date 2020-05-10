@@ -1,22 +1,17 @@
 package org.example.models;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 
 @Setter
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
+@Builder
 @Entity
 @Table(name = "users")
-public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+public class User extends BaseEntity {
+
     @Column(length = 100)
     private String login;
     @Column(length = 25)

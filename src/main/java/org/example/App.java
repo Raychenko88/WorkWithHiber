@@ -1,13 +1,12 @@
 package org.example;
 
-/**
- * Hello world!
- *
- */
-public class App 
+
+import org.example.dao.UserDAO;
+
+public class App
 {
     public static void main( String[] args )
     {
-        System.out.println( "Hello World!" );
+        UserDAO userDAO = new UserDAO();
     }
 }

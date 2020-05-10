@@ -1,49 +1,47 @@
 package org.example.dao;
 
-import org.example.factory.HibernateFactory;
 import org.example.models.User;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
+import org.hibernate.query.Query;
 
-public class UserDAO {
+import java.util.List;
 
-    public static User save(User user){
-        SessionFactory sessionFactory = HibernateFactory.getSessionFactory();
+
+public class UserDAO extends BaseDAO<User>{
+
+
+    public List<User> findByLogAndPass(String login, String password){
+
         Session session = sessionFactory.openSession();
         session.getTransaction().begin();
-        Integer id = (Integer) session.save(user);
+        String sql = "SELECT * FROM users WHERE login=:loginParam AND password=:passwordParam";
+        Query<User> query = session.createNativeQuery(sql,User.class);
+        query.setParameter("loginParam", login);
+        query.setParameter("passwordParam", password);
+        List<User> list = query.getResultList();
         session.getTransaction().commit();
         session.close();
-        user.setId(id);
-        return user;
+        return list;
     }
 
-    public static User update(User user){
-        SessionFactory sessionFactory = HibernateFactory.getSessionFactory();
+    public List<User> getAll(){
         Session session = sessionFactory.openSession();
         session.getTransaction().begin();
-//        session.beginTransaction().begin();
-        session.update(user);
+        String sql = "SELECT * FROM users";
+        Query<User> query = session.createNativeQuery(sql, User.class);
+        List<User> list = query.getResultList();
         session.getTransaction().commit();
         session.close();
-        return user;
+        return list;
     }
 
-    public static User findById(Integer id){
-        SessionFactory sessionFactory = HibernateFactory.getSessionFactory();
+    public  User getByLogin (String login){
         Session session = sessionFactory.openSession();
         session.getTransaction().begin();
-        User user = session.find(User.class,id);
-        session.getTransaction().commit();
-        session.close();
-        return user;
-    }
-
-    public static User delete(User user){
-        SessionFactory sessionFactory = HibernateFactory.getSessionFactory();
-        Session session = sessionFactory.openSession();
-        session.getTransaction().begin();
-        session.delete(user);
+        String sql = "SELECT * FROM users WHERE login =:loginParam";
+        Query<User> query = session.createNativeQuery(sql, User.class);
+        query.setParameter("loginParam", login);
+        User user = query.getSingleResult();
         session.getTransaction().commit();
         session.close();
         return user;

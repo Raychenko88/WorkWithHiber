@@ -1,50 +1,62 @@
 package org.example.dao;
 
-import org.example.factory.HibernateFactory;
+import org.example.models.Cart;
 import org.example.models.Item;
+import org.example.models.User;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
+import org.hibernate.query.Query;
 
-public class ItemDAO {
+import java.util.List;
 
-    public static Item save(Item item) {
-        SessionFactory sessionFactory = HibernateFactory.getSessionFactory();
+public class ItemDAO extends BaseDAO<Item> {
+
+    public List<Item> findByItemCode(String code) {
         Session session = sessionFactory.openSession();
         session.getTransaction().begin();
-        Integer id = (Integer) session.save(item);
+        String sql = "SELECT * FROM items WHERE code=:itemCodeParam";
+        Query<Item> query = session.createNativeQuery(sql, Item.class);
+        query.setParameter("itemCodeParam", code);
+        List<Item> list = query.getResultList();
         session.getTransaction().commit();
         session.close();
-        item.setId(id);
-        return item;
+        return list;
     }
 
-    public static Item update(Item item) {
-        SessionFactory sessionFactory = HibernateFactory.getSessionFactory();
+    public List<Item> getAll() {
         Session session = sessionFactory.openSession();
         session.getTransaction().begin();
-        session.update(item);
+        String sql = "SELECT * FROM items";
+        Query<Item> query = session.createNativeQuery(sql, Item.class);
+        List<Item> list = query.getResultList();
         session.getTransaction().commit();
         session.close();
-        return item;
+        return list;
     }
 
-    public static Item findById(Integer id) {
-        SessionFactory sessionFactory = HibernateFactory.getSessionFactory();
+    public List<Item> getAllByCart(Cart cart) {
         Session session = sessionFactory.openSession();
         session.getTransaction().begin();
-        Item item = session.find(Item.class, id);
+        String sql = "SELECT * FROM items i " +
+                "JOIN orders o ON o.item_id = i.id " +
+                "JOIN carts c ON c.id = o.cart_id " +
+                "WHERE c.id =:cartId ";
+        Query<Item> query = session.createNativeQuery(sql, Item.class);
+        query.setParameter("cartId", cart.getId());
+        List<Item> items = query.getResultList();
         session.getTransaction().commit();
         session.close();
-        return item;
+        return items;
     }
 
-    public static Item delete(Item item) {
-        SessionFactory sessionFactory = HibernateFactory.getSessionFactory();
+    public List<Item> getAllAvialable() {
         Session session = sessionFactory.openSession();
         session.getTransaction().begin();
-        session.delete(item);
+        String sql = "SELECT * FROM items WHERE availability > 0";
+        Query<Item> query = session.createNativeQuery(sql, Item.class);
+        List<Item> items = query.getResultList();
         session.getTransaction().commit();
         session.close();
-        return item;
+        return items;
     }
+
 }

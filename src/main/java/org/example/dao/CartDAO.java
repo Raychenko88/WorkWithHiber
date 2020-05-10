@@ -1,49 +1,51 @@
 package org.example.dao;
 
-import org.example.factory.HibernateFactory;
 import org.example.models.Cart;
+import org.example.models.User;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
+import org.hibernate.query.Query;
 
-public class CartDAO {
+import java.sql.SQLException;
+import java.util.List;
 
-    public static Cart save(Cart cart){
-        SessionFactory sessionFactory = HibernateFactory.getSessionFactory();
+public class CartDAO extends BaseDAO<Cart>{
+
+    public List<Cart> getAllByUserAndPeriod(User user, Long timeFrom, Long timeTo){
         Session session = sessionFactory.openSession();
         session.getTransaction().begin();
-        Integer id = (Integer) session.save(cart);
+        String sql = "SELECT * FROM carts WHERE user_id=:userId AND creation_time >=:timeDown AND creation_time <=:timUp";
+        Query<Cart> query = session.createNativeQuery(sql, Cart.class);
+        query.setParameter("userId", user.getId());
+        query.setParameter("timeDown", timeFrom);
+        query.setParameter("timUp", timeTo);
+        List<Cart> list = query.getResultList();
         session.getTransaction().commit();
         session.close();
-        cart.setId(id);
-        return cart;
+        return list;
     }
 
-    public static Cart update(Cart cart){
-        SessionFactory sessionFactory = HibernateFactory.getSessionFactory();
+    public  Cart getByUserAndOpenStatus(User user){
         Session session = sessionFactory.openSession();
         session.getTransaction().begin();
-        session.update(cart);
-        session.getTransaction().commit();
-        session.close();
-        return cart;
-    }
-
-    public static Cart findById(Integer id){
-        SessionFactory sessionFactory = HibernateFactory.getSessionFactory();
-        Session session = sessionFactory.openSession();
-        session.getTransaction().begin();
-        Cart cart = session.find(Cart.class, id);
+        String sql = "SELECT * FROM carts WHERE user_id =:id AND closed=0";
+        Query<Cart> query = session.createNativeQuery(sql, Cart.class);
+        query.setParameter("id", user.getId());
+        Cart cart = query.getSingleResult();
         session.getTransaction().commit();
         session.close();
         return cart;
     }
 
-    public static Cart delete(Cart cart){
-        SessionFactory sessionFactory = HibernateFactory.getSessionFactory();
+    public Cart updateStatus(Cart cart, Integer closed){
         Session session = sessionFactory.openSession();
         session.getTransaction().begin();
-        session.delete(cart);
+        String sql = "UPDATE carts SET closed=:closedParam WHERE id =:idParam";
+        Query query = session.createNativeQuery(sql, Cart.class);
+        query.setParameter("closedParam", closed);
+        query.setParameter("idParam", cart.getId());
+        query.executeUpdate();
         session.getTransaction().commit();
+        cart.setClosed(closed);
         session.close();
         return cart;
     }
