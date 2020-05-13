@@ -51,11 +51,6 @@ class UserDAOTest {
         List<User> list = userDAO.getAll();
         assertNotNull(list);
         assertFalse(list.isEmpty());
-        assertNotNull(list.get(0));
-        assertEquals(list.get(0).getLogin(), user1.getLogin());
-        assertNotNull(list.get(1));
-        assertEquals(list.get(1).getLogin(), user2.getLogin());
-
         userDAO.delete(user1);
         userDAO.delete(user2);
     }
@@ -64,9 +59,10 @@ class UserDAOTest {
     void getByLoginTest() {
         User user1 = new User("test_login1", "test_pass1", "test_fn", "test_ln");
         userDAO.save(user1);
-        User user2 = userDAO.getByLogin(user1.getLogin());
-        assertNotNull(user2);
-        assertEquals(user1.getLogin(), user2.getLogin());
+        List<User> list = userDAO.getByLogin(user1.getLogin());
+        assertNotNull(list);
+        assertFalse(list.isEmpty());
+        assertEquals(user1.getLogin(), list.get(0).getLogin());
         userDAO.delete(user1);
     }
 

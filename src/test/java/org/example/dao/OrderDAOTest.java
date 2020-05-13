@@ -149,4 +149,31 @@ class OrderDAOTest {
         assertEquals(100, targetOrder.getAmount());
     }
 
+    @Test
+    void findOrderByItem() {
+        User user = new User("login0", "pass0", "first_name0", "last_name0");
+        userDAO.save(user);
+        users.add(user);
+        assertNotNull(user.getId());
+
+        Cart cart = new Cart(0, user.getId(), currentTime);
+        cartDAO.save(cart);
+        carts.add(cart);
+        assertNotNull(cart.getId());
+
+        Item item = new Item("name_5", "code_5", 50, 500);
+        itemDAO.save(item);
+        items.add(item);
+        assertNotNull(item.getId());
+
+        Order order = new Order(item.getId(), cart.getId(), 50);
+        orderDAO.save(order);
+        orders.add(order);
+        assertNotNull(order.getId());
+
+        Order targetOrder = orderDAO.findOrderByItem(item.getId());
+        assertNotNull(targetOrder);
+        assertEquals(item.getId(), targetOrder.getItemId());
+    }
+
 }

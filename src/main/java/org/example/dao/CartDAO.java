@@ -27,7 +27,7 @@ public class CartDAO extends BaseDAO<Cart>{
     public  Cart getByUserAndOpenStatus(User user){
         Session session = sessionFactory.openSession();
         session.getTransaction().begin();
-        String sql = "SELECT * FROM carts WHERE user_id =:id AND closed=0";
+        String sql = "SELECT * FROM carts WHERE user_id =:id AND closed='0'";
         Query<Cart> query = session.createNativeQuery(sql, Cart.class);
         query.setParameter("id", user.getId());
         Cart cart = query.getSingleResult();

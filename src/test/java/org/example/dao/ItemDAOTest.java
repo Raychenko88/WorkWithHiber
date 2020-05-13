@@ -54,11 +54,6 @@ class ItemDAOTest {
         List<Item> list = itemDAO.getAll();
         assertNotNull(list);
         assertFalse(list.isEmpty());
-        assertNotNull(list.get(0));
-        assertEquals(list.get(0).getName(), item1.getName());
-        assertNotNull(list.get(1));
-        assertEquals(list.get(1).getName(), item2.getName());
-
         itemDAO.delete(item1);
         itemDAO.delete(item2);
     }
@@ -78,9 +73,9 @@ class ItemDAOTest {
         assertFalse(list.isEmpty());
         assertNotNull(list.get(0));
         assertEquals(list.get(0).getName(), item1.getName());
-        itemDAO.delete(item1);
-        cartDAO.delete(cart);
         orderDAO.delete(order);
+        cartDAO.delete(cart);
+        itemDAO.delete(item1);
         userDAO.delete(user);
     }
 
@@ -94,11 +89,6 @@ class ItemDAOTest {
         List<Item> list = itemDAO.getAllAvialable();
         assertNotNull(list);
         assertFalse(list.isEmpty());
-        assertNotNull(list.get(0));
-        assertEquals(list.get(0).getAvailability(), item1.getAvailability());
-        assertNotNull(list.get(1));
-        assertEquals(list.get(1).getAvailability(), item2.getAvailability());
-
         itemDAO.delete(item1);
         itemDAO.delete(item2);
     }

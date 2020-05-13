@@ -35,15 +35,15 @@ public class UserDAO extends BaseDAO<User>{
         return list;
     }
 
-    public  User getByLogin (String login){
+    public  List<User> getByLogin (String login){
         Session session = sessionFactory.openSession();
         session.getTransaction().begin();
         String sql = "SELECT * FROM users WHERE login =:loginParam";
         Query<User> query = session.createNativeQuery(sql, User.class);
         query.setParameter("loginParam", login);
-        User user = query.getSingleResult();
+        List<User> list = query.getResultList();
         session.getTransaction().commit();
         session.close();
-        return user;
+        return list;
     }
 }

@@ -1,6 +1,7 @@
 package org.example.dao;
 
-import org.example.factory.HibernateFactory;
+import org.example.factory.impl.H2Factory;
+import org.example.factory.impl.PostgresFactory;
 import org.example.models.BaseEntity;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -10,10 +11,14 @@ import java.lang.reflect.ParameterizedType;
 public abstract class BaseDAO<T extends BaseEntity> {
 
     private Class<T> type;
-    protected SessionFactory sessionFactory = HibernateFactory.getSessionFactory();
+    public final SessionFactory sessionFactory;
 
     public BaseDAO(){
         type = (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
+
+//        sessionFactory = new PostgresFactory().getSessionFactory();
+        sessionFactory = new H2Factory().getSessionFactory();
+
     }
 
     public T save(T entity) {

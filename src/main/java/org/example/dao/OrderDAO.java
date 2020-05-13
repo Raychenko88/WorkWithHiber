@@ -39,4 +39,21 @@ public class OrderDAO extends BaseDAO<Order> {
         return order;
     }
 
+    public Order findOrderByItem(Integer itemId){
+        Session session = sessionFactory.openSession();
+        session.getTransaction().begin();
+        String sql =
+                "SELECT * FROM orders o " +
+                        "JOIN carts c ON o.cart_id = c.id " +
+                        "JOIN items i ON o.item_id = i.id " +
+                        "WHERE c.closed = '0' " +
+                        "AND i.id =:itemId";
+        Query<Order> query = session.createNativeQuery(sql, Order.class);
+        query.setParameter("itemId", itemId);
+        Order order = query.getSingleResult();
+        session.getTransaction().commit();
+        session.close();
+        return order;
+    }
+
 }
